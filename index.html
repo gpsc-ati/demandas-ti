@@ -288,13 +288,6 @@ function iniciarApp() {
                 ${opcoes.map(o => `<button class="opt ${S.resp[i.cod] === o ? 'sel' : ''}" data-cod="${i.cod}" data-v="${esc(o)}" aria-pressed="${S.resp[i.cod] === o}">${esc(o)}</button>`).join('')}
               </div>
             </div>`).join('')}
-          ${servico ? `
-            <div class="card" style="margin-top:18px">
-              <div class="field" style="margin:0">
-                <label for="outros">Algum outro item de TI que seu órgão vai contratar em 2027? <small>(opcional)</small></label>
-                <textarea id="outros" placeholder="Ex.: 20 tablets para fiscalização; licenças de software de georreferenciamento">${esc(S.outros)}</textarea>
-              </div>
-            </div>` : ''}
         </section>`;
       const contar = () => { const n = lista.filter(i => S.resp[i.cod]).length; $('cnt').innerHTML = `<b>${n}</b> de ${lista.length}`; };
       contar();
@@ -306,7 +299,7 @@ function iniciarApp() {
         box.querySelectorAll('.opt').forEach(x => { const s = x.dataset.v === v; x.classList.toggle('sel', s); x.setAttribute('aria-pressed', s); });
         contar();
       });
-      const guardar = () => { if ($('outros')) S.outros = $('outros').value; };
+      const guardar = () => {};
       const ult = S.cat === CATS.length - 1;
       nav(`<button class="btn ghost" id="back">Voltar</button><button class="btn primary" id="next">${S.voltarRevisao || ult ? 'Revisar' : 'Próximo: ' + CATS[S.cat + 1]}</button>`);
       $('back').onclick = () => { guardar(); S.cat === 0 ? ir('id') : ir('cat', S.cat - 1); };
@@ -337,13 +330,13 @@ function iniciarApp() {
                   : `<div class="empty">Nenhum item marcado</div>`}
               </div>`;
             }).join('')}
-            <div class="sumGroup">
-              <h3>Outros itens <button class="link" data-cat="2">Editar</button></h3>
-              <div class="${S.outros.trim() ? '' : 'empty'}" style="font-size:15px;white-space:pre-wrap">${S.outros.trim() ? esc(S.outros) : 'Nenhum'}</div>
-            </div>
             <div class="field" id="boxJust" style="margin:0;display:none">
               <label for="just">Por que esses itens são prioritários? <small>(opcional)</small></label>
               <textarea id="just" style="min-height:80px" placeholder="Ex.: equipamentos sem garantia; contrato atual vence em março">${esc(S.justificativa)}</textarea>
+            </div>
+            <div class="field" style="margin:16px 0 0">
+              <label for="outros">Faltou algum item ou tem alguma sugestão? <small>(opcional)</small></label>
+              <textarea id="outros" style="min-height:90px" placeholder="Ex.: 20 tablets para fiscalização; sugestão de incluir licenças de georreferenciamento">${esc(S.outros)}</textarea>
             </div>
           </div>
         </section>`;
@@ -364,6 +357,7 @@ function iniciarApp() {
       });
       atualizarPrio();
       $('just').oninput = () => { S.justificativa = $('just').value; };
+      $('outros').oninput = () => { S.outros = $('outros').value; };
       m.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => ir('cat', +b.dataset.cat));
       m.querySelectorAll('[data-ir]').forEach(b => b.onclick = () => ir(b.dataset.ir));
       nav(`<button class="btn primary" id="send">Enviar resposta</button>`);
